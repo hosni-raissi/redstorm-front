@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { SecurityReport } from "@/components/security-report"
 import { PhaseResultCard } from "@/components/phase-result-card"
 import { useTranslation, type Language } from "@/lib/translations"
-
+import axios from 'axios';
 export type ScanStep = "preengagement" | "reconnaissance" | "scanning" | "vulnerability" | "exploitation" | "report"
 export type StepStatus = "pending" | "running" | "completed" | "failed"
 
@@ -105,37 +105,31 @@ export function UrlScanner({ language }: UrlScannerProps) {
     }
   }
 
-  const callPhaseAPI = async (phase: ScanStep, targetUrl: string): Promise<any> => {
-    console.log(`[v0] Calling ${phase} API for ${targetUrl}`)
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/phases/${phase}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          target: targetUrl,
-          client_id: clientId,
-          options: {},
-        }),
-      })
+const callPhaseAPI = async (phase: ScanStep, targetUrl: string): Promise<any> => {
+  console.log(`[v0] Calling ${phase} API for ${targetUrl}`);
 
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.statusText}`)
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/v1/phases/${phase}`, {
+      target: targetUrl,
+      client_id: clientId,
+      options: {},
+    }, {
+      timeout: 300000, // 5 minutes
+      headers: {
+        'Content-Type': 'application/json'
       }
+    });
 
-      const data = await response.json()
-      console.log(`[v0] ${phase} API response:`, data)
-      return data
-    } catch (error) {
-      console.error(`[v0] ${phase} API error:`, error)
-      throw error
-    }
+    console.log(`[v0] ${phase} API response:`, response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`[v0] ${phase} API error:`, error);
+    throw error;
   }
-
+};
   const generateReport = async (targetUrl: string): Promise<any> => {
-    console.log(`[v0] Generating report for ${targetUrl}`)
+    console.log(`[redstorm] Generating report for ${targetUrl}`)
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/v1/reports/generate`, {
@@ -156,10 +150,10 @@ export function UrlScanner({ language }: UrlScannerProps) {
       }
 
       const data = await response.json()
-      console.log(`[v0] Report generation response:`, data)
+      console.log(`[redstorm] Report generation response:`, data)
       return data
     } catch (error) {
-      console.error(`[v0] Report generation error:`, error)
+      console.error(`[redstorm] Report generation error:`, error)
       throw error
     }
   }
@@ -277,7 +271,7 @@ export function UrlScanner({ language }: UrlScannerProps) {
       setCurrentStep(i)
 
       try {
-        console.log(`[v0] Starting phase: ${phase}`)
+        console.log(`[redstorm] Starting phase: ${phase}`)
 
         // Call the backend API for this phase
         const phaseResult = await callPhaseAPI(phase, url)
@@ -308,12 +302,12 @@ export function UrlScanner({ language }: UrlScannerProps) {
 
         // If phase failed, stop the scan
         if (phaseResult.status === "failed" || phaseResult.status === "error") {
-          console.error(`[v0] Phase ${phase} failed:`, phaseResult.results?.message)
+          console.error(`[redstorm] Phase ${phase} failed:`, phaseResult.results?.message)
           setIsScanning(false)
           return
         }
       } catch (error) {
-        console.error(`[v0] Error in phase ${phase}:`, error)
+        console.error(`[redstorm] Error in phase ${phase}:`, error)
 
         // Update progress with failed status
         setScanProgress((prev) =>
@@ -337,7 +331,7 @@ export function UrlScanner({ language }: UrlScannerProps) {
 
     // Generate final report
     try {
-      console.log(`[v0] Generating final report`)
+      console.log(`[redstorm] Generating final report`)
       setCurrentStep(scanSteps.length - 1)
 
       setScanProgress((prev) =>
@@ -374,7 +368,7 @@ export function UrlScanner({ language }: UrlScannerProps) {
       setSecurityReport(report)
       setShowReport(true)
     } catch (error) {
-      console.error(`[v0] Report generation error:`, error)
+      console.error(`[redstorm] Report generation error:`, error)
 
       setScanProgress((prev) =>
         prev.map((item, index) => {
@@ -404,7 +398,7 @@ export function UrlScanner({ language }: UrlScannerProps) {
   }
 
   const handleReportDownload = () => {
-    console.log("[v0] Security report downloaded")
+    console.log("[redstorm] Security report downloaded")
   }
 
   const progressPercentage =
