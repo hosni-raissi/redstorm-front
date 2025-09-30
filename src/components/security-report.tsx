@@ -44,14 +44,7 @@ interface SecurityReportProps {
 }
 
 export function SecurityReport({ report, onDownload }: SecurityReportProps) {
-  const languageContext = useLanguage()
-  const t = (key: string) => {
-    // Replace this with your actual translation logic or access to translations
-    // For example, if languageContext has a translations object:
-    // return languageContext.translations[key] || key
-    // For now, fallback to key
-    return key
-  }
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState("overview")
 
   if (!report) {

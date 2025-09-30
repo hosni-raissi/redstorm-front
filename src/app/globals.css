@@ -4,90 +4,80 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Light theme for cybersecurity dashboard - professional light mode */
-  --background: oklch(0.98 0.01 240);
-  --foreground: oklch(0.15 0.05 240);
-  --card: oklch(0.95 0.02 240);
-  --card-foreground: oklch(0.18 0.05 240);
-  --popover: oklch(0.95 0.02 240);
-  --popover-foreground: oklch(0.18 0.05 240);
-  --primary: oklch(0.45 0.25 200);
-  --primary-foreground: oklch(0.98 0.01 240);
-  --secondary: oklch(0.92 0.03 240);
-  --secondary-foreground: oklch(0.25 0.05 240);
-  --muted: oklch(0.94 0.02 240);
-  --muted-foreground: oklch(0.55 0.05 240);
-  --accent: oklch(0.35 0.35 120);
-  --accent-foreground: oklch(0.98 0.01 240);
-  --destructive: oklch(0.5 0.3 15);
-  --destructive-foreground: oklch(0.98 0.01 240);
-  --border: oklch(0.88 0.04 240);
-  --input: oklch(0.92 0.03 240);
-  --ring: oklch(0.45 0.25 200);
-  --chart-1: oklch(0.45 0.25 200);
-  --chart-2: oklch(0.35 0.35 120);
-  --chart-3: oklch(0.5 0.3 15);
-  --chart-4: oklch(0.5 0.25 280);
-  --chart-5: oklch(0.45 0.25 60);
-  --radius: 0.5rem;
-  --sidebar: oklch(0.96 0.02 240);
-  --sidebar-foreground: oklch(0.2 0.05 240);
-  --sidebar-primary: oklch(0.45 0.25 200);
-  --sidebar-primary-foreground: oklch(0.98 0.01 240);
-  --sidebar-accent: oklch(0.92 0.03 240);
-  --sidebar-accent-foreground: oklch(0.25 0.05 240);
-  --sidebar-border: oklch(0.88 0.04 240);
-  --sidebar-ring: oklch(0.45 0.25 200);
-
-  /* Updated cybersecurity-specific colors for light theme */
-  --cyber-neon: oklch(0.5 0.4 180);
-  --cyber-warning: oklch(0.55 0.35 60);
-  --cyber-danger: oklch(0.5 0.35 15);
-  --cyber-success: oklch(0.45 0.35 120);
-  --cyber-grid: oklch(0.85 0.05 240);
+  /* Updated to futuristic blue theme matching reference image */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  --neon-cyan: oklch(0.75 0.15 200);
+  --neon-blue: oklch(0.6 0.2 240);
+  --neon-yellow: oklch(0.85 0.18 90);
+  --neon-pink: oklch(0.7 0.22 340);
 }
 
 .dark {
-  /* Enhanced dark theme for cybersecurity aesthetic */
-  --background: oklch(0.05 0.02 240);
-  --foreground: oklch(0.98 0.05 180);
-  --card: oklch(0.08 0.03 240);
-  --card-foreground: oklch(0.95 0.05 180);
-  --popover: oklch(0.08 0.03 240);
-  --popover-foreground: oklch(0.95 0.05 180);
-  --primary: oklch(0.7 0.3 200);
-  --primary-foreground: oklch(0.05 0.02 240);
-  --secondary: oklch(0.15 0.04 240);
-  --secondary-foreground: oklch(0.9 0.05 180);
-  --muted: oklch(0.12 0.03 240);
-  --muted-foreground: oklch(0.7 0.05 180);
-  --accent: oklch(0.6 0.4 120);
-  --accent-foreground: oklch(0.05 0.02 240);
-  --destructive: oklch(0.65 0.35 15);
-  --destructive-foreground: oklch(0.98 0.05 180);
-  --border: oklch(0.2 0.04 240);
-  --input: oklch(0.15 0.04 240);
-  --ring: oklch(0.7 0.3 200);
-  --chart-1: oklch(0.7 0.3 200);
-  --chart-2: oklch(0.6 0.4 120);
-  --chart-3: oklch(0.65 0.35 15);
-  --chart-4: oklch(0.75 0.3 280);
-  --chart-5: oklch(0.65 0.3 60);
-  --sidebar: oklch(0.06 0.02 240);
-  --sidebar-foreground: oklch(0.95 0.05 180);
-  --sidebar-primary: oklch(0.7 0.3 200);
-  --sidebar-primary-foreground: oklch(0.05 0.02 240);
-  --sidebar-accent: oklch(0.15 0.04 240);
-  --sidebar-accent-foreground: oklch(0.9 0.05 180);
-  --sidebar-border: oklch(0.2 0.04 240);
-  --sidebar-ring: oklch(0.7 0.3 200);
-
-  /* Enhanced cybersecurity colors for dark mode */
-  --cyber-neon: oklch(0.8 0.5 180);
-  --cyber-warning: oklch(0.8 0.4 60);
-  --cyber-danger: oklch(0.7 0.4 15);
-  --cyber-success: oklch(0.7 0.4 120);
-  --cyber-grid: oklch(0.15 0.05 240);
+  /* Enhanced dark theme with neon accents */
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
 }
 
 @theme inline {
@@ -129,13 +119,10 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-
-  /* Added cybersecurity color utilities */
-  --color-cyber-neon: var(--cyber-neon);
-  --color-cyber-warning: var(--cyber-warning);
-  --color-cyber-danger: var(--cyber-danger);
-  --color-cyber-success: var(--cyber-success);
-  --color-cyber-grid: var(--cyber-grid);
+  --color-neon-cyan: var(--neon-cyan);
+  --color-neon-blue: var(--neon-blue);
+  --color-neon-yellow: var(--neon-yellow);
+  --color-neon-pink: var(--neon-pink);
 }
 
 @layer base {
@@ -143,161 +130,89 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-mono;
+    @apply bg-background text-foreground;
   }
+}
 
-  /* Enhanced cybersecurity grid background effect */
-  .cyber-grid {
-    background-image: linear-gradient(rgba(var(--color-cyber-grid), 0.3) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(var(--color-cyber-grid), 0.3) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-
-  /* Enhanced glitch animation for cybersecurity effects */
-  @keyframes glitch {
-    0%,
-    100% {
-      transform: translate(0);
-    }
-    20% {
-      transform: translate(-2px, 2px);
-    }
-    40% {
-      transform: translate(-2px, -2px);
-    }
-    60% {
-      transform: translate(2px, 2px);
-    }
-    80% {
-      transform: translate(2px, -2px);
-    }
-  }
-
-  .glitch {
-    animation: glitch 0.3s ease-in-out infinite alternate;
-  }
-
-  .glitch-text {
+/* Added futuristic effects matching reference image */
+@layer utilities {
+  .futuristic-bg {
+    background: linear-gradient(135deg, #001a33 0%, #002b4d 25%, #003d66 50%, #002b4d 75%, #001a33 100%);
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
     position: relative;
-    animation: glitch 0.2s ease-in-out;
   }
 
-  /* Enhanced neon glow effect with multiple intensities */
-  .neon-glow {
-    box-shadow: 0 0 5px var(--color-cyber-neon), 0 0 10px var(--color-cyber-neon), 0 0 15px var(--color-cyber-neon);
-    transition: box-shadow 0.3s ease;
-  }
-
-  .neon-glow:hover {
-    box-shadow: 0 0 10px var(--color-cyber-neon), 0 0 20px var(--color-cyber-neon), 0 0 30px var(--color-cyber-neon);
-  }
-
-  .neon-glow-intense {
-    box-shadow: 0 0 10px var(--color-cyber-neon), 0 0 20px var(--color-cyber-neon), 0 0 30px var(--color-cyber-neon), 0
-      0 40px var(--color-cyber-neon);
-  }
-
-  /* Enhanced terminal-style text effects */
-  .terminal-text {
-    font-family: "Courier New", monospace;
-    text-shadow: 0 0 10px currentColor;
-    letter-spacing: 0.05em;
-  }
-
-  /* Added scanning line animation */
-  @keyframes scan-line {
-    0% {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(100vh);
-      opacity: 0;
-    }
-  }
-
-  .scan-line {
-    position: fixed;
+  .futuristic-bg::before {
+    content: "";
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--color-cyber-neon), transparent);
-    animation: scan-line 3s ease-in-out infinite;
+    bottom: 0;
+    background-image: linear-gradient(rgba(0, 200, 255, 0.03) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(0, 200, 255, 0.03) 2px, transparent 2px),
+      linear-gradient(rgba(0, 200, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 200, 255, 0.02) 1px, transparent 1px);
+    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
     pointer-events: none;
-    z-index: 1000;
   }
 
-  /* Added data stream animation */
-  @keyframes data-stream {
+  @keyframes gradient-shift {
     0% {
-      opacity: 0;
-      transform: translateY(-10px);
+      background-position: 0% 50%;
     }
     50% {
-      opacity: 1;
+      background-position: 100% 50%;
     }
     100% {
-      opacity: 0;
-      transform: translateY(10px);
+      background-position: 0% 50%;
     }
   }
 
-  .data-stream {
-    animation: data-stream 2s ease-in-out infinite;
+  .glow-card {
+    box-shadow: 0 0 30px rgba(0, 200, 255, 0.15), 0 0 60px rgba(0, 100, 255, 0.1), inset 0 0 30px
+      rgba(0, 200, 255, 0.03);
+    border: 1px solid rgba(0, 200, 255, 0.3);
+    background: linear-gradient(135deg, rgba(0, 50, 100, 0.4) 0%, rgba(0, 30, 80, 0.3) 50%, rgba(0, 50, 100, 0.4) 100%);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
   }
 
-  /* Added holographic effect */
-  @keyframes hologram {
+  .glow-card:hover {
+    box-shadow: 0 0 40px rgba(0, 200, 255, 0.25), 0 0 80px rgba(0, 100, 255, 0.15), inset 0 0 40px
+      rgba(0, 200, 255, 0.05);
+    border-color: rgba(0, 200, 255, 0.5);
+  }
+
+  .glow-border {
+    border: 1px solid rgba(0, 200, 255, 0.4);
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.2), inset 0 0 15px rgba(0, 200, 255, 0.05);
+  }
+
+  .neon-text {
+    color: rgb(0, 230, 255);
+    text-shadow: 0 0 10px rgba(0, 200, 255, 0.8), 0 0 20px rgba(0, 200, 255, 0.5), 0 0 30px rgba(0, 200, 255, 0.3);
+  }
+
+  .grid-bg {
+    background-image: linear-gradient(rgba(0, 200, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 200, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
     0%,
     100% {
-      opacity: 1;
-      filter: hue-rotate(0deg);
-    }
-    25% {
-      opacity: 0.8;
-      filter: hue-rotate(90deg);
+      box-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
     }
     50% {
-      opacity: 0.9;
-      filter: hue-rotate(180deg);
+      box-shadow: 0 0 40px rgba(0, 200, 255, 0.6), 0 0 60px rgba(0, 100, 255, 0.4);
     }
-    75% {
-      opacity: 0.7;
-      filter: hue-rotate(270deg);
-    }
-  }
-
-  .hologram {
-    animation: hologram 4s ease-in-out infinite;
-  }
-
-  /* Added circuit board pattern */
-  .circuit-pattern {
-    background-image: radial-gradient(circle at 25% 25%, var(--color-cyber-neon) 2px, transparent 2px),
-      radial-gradient(circle at 75% 75%, var(--color-cyber-warning) 1px, transparent 1px),
-      linear-gradient(45deg, transparent 40%, var(--color-cyber-neon) 40%, var(--color-cyber-neon) 60%, transparent 60%);
-    background-size: 40px 40px, 30px 30px, 20px 20px;
-    opacity: 0.1;
-  }
-
-  /* Added pulsing border effect */
-  @keyframes pulse-border {
-    0%,
-    100% {
-      border-color: var(--color-border);
-      box-shadow: none;
-    }
-    50% {
-      border-color: var(--color-cyber-neon);
-      box-shadow: 0 0 10px var(--color-cyber-neon);
-    }
-  }
-
-  .pulse-border {
-    animation: pulse-border 2s ease-in-out infinite;
   }
 }

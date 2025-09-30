@@ -9,9 +9,10 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { SecurityReport } from "@/components/security-report"
+import { PhaseResultCard } from "@/components/phase-result-card"
 import { useTranslation, type Language } from "@/lib/translations"
 
-export type ScanStep = "validation" | "reconnaissance" | "enumeration" | "scan" | "vulnerability" | "exploit" | "report"
+export type ScanStep = "preengagement" | "reconnaissance" | "scanning" | "vulnerability" | "exploitation" | "report"
 export type StepStatus = "pending" | "running" | "completed" | "failed"
 
 interface ScanProgress {
@@ -19,6 +20,9 @@ interface ScanProgress {
   status: StepStatus
   message?: string
   timestamp?: string
+  results?: any
+  executionTime?: number
+  phaseId?: string
 }
 
 interface SecurityReportData {
@@ -54,6 +58,8 @@ interface UrlScannerProps {
   language: Language
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
 export function UrlScanner({ language }: UrlScannerProps) {
   const t = useTranslation(language)
   const [url, setUrl] = useState("")
@@ -62,14 +68,14 @@ export function UrlScanner({ language }: UrlScannerProps) {
   const [currentStep, setCurrentStep] = useState<number>(-1)
   const [securityReport, setSecurityReport] = useState<SecurityReportData | null>(null)
   const [showReport, setShowReport] = useState(false)
+  const [clientId] = useState(() => `client-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`)
 
   const scanSteps: ScanStep[] = [
-    "validation",
+    "preengagement",
     "reconnaissance",
-    "enumeration",
-    "scan",
+    "scanning",
     "vulnerability",
-    "exploit",
+    "exploitation",
     "report",
   ]
 
@@ -99,16 +105,78 @@ export function UrlScanner({ language }: UrlScannerProps) {
     }
   }
 
-  const getRandomErrorMessage = () => {
-    const errors = [t.errorMessages.connectionTimeout, t.errorMessages.accessDenied, t.errorMessages.networkError]
-    return errors[Math.floor(Math.random() * errors.length)]
+  const callPhaseAPI = async (phase: ScanStep, targetUrl: string): Promise<any> => {
+    console.log(`[v0] Calling ${phase} API for ${targetUrl}`)
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/phases/${phase}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          target: targetUrl,
+          client_id: clientId,
+          options: {},
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      console.log(`[v0] ${phase} API response:`, data)
+      return data
+    } catch (error) {
+      console.error(`[v0] ${phase} API error:`, error)
+      throw error
+    }
   }
 
-  const generateMockReport = (targetUrl: string): SecurityReportData => {
-    const vulnerabilities = Math.floor(Math.random() * 15) + 1
-    const criticalIssues = Math.floor(Math.random() * 3)
-    const warnings = Math.floor(Math.random() * 8) + 2
-    const passed = Math.floor(Math.random() * 20) + 10
+  const generateReport = async (targetUrl: string): Promise<any> => {
+    console.log(`[v0] Generating report for ${targetUrl}`)
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/reports/generate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          target: targetUrl,
+          client_id: clientId,
+          report_type: "executive",
+          include_recommendations: true,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Report generation failed: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      console.log(`[v0] Report generation response:`, data)
+      return data
+    } catch (error) {
+      console.error(`[v0] Report generation error:`, error)
+      throw error
+    }
+  }
+
+  const convertToSecurityReport = (targetUrl: string, phaseResults: ScanProgress[]): SecurityReportData => {
+    // Extract data from phase results
+    const preengagement = phaseResults.find((p) => p.step === "preengagement")
+    const reconnaissance = phaseResults.find((p) => p.step === "reconnaissance")
+    const scanning = phaseResults.find((p) => p.step === "scanning")
+    const vulnerability = phaseResults.find((p) => p.step === "vulnerability")
+    const exploitation = phaseResults.find((p) => p.step === "exploitation")
+
+    // Calculate summary metrics from results
+    const vulnerabilities = vulnerability?.results?.vulnerabilities_found || 0
+    const criticalIssues = vulnerability?.results?.critical || 0
+    const warnings = vulnerability?.results?.medium || 0
+    const passed = 10 // Default value
 
     const overallScore = Math.max(20, 100 - criticalIssues * 25 - warnings * 5 - vulnerabilities * 2)
 
@@ -126,68 +194,68 @@ export function UrlScanner({ language }: UrlScannerProps) {
       },
       details: {
         validation: {
-          status: "success",
-          findings: ["URL format is valid", "Target is accessible", "SSL certificate is valid"],
-          details: "Target URL validation completed successfully. The target is reachable and responds to requests.",
-          duration: 1250,
+          status: preengagement?.status === "completed" ? "success" : "error",
+          findings: preengagement?.results?.is_available
+            ? ["Target is reachable", "URL format is valid", "Connection established"]
+            : ["Target validation failed"],
+          details: preengagement?.results?.message || "Target validation completed",
+          duration: preengagement?.executionTime || 0,
         },
         reconnaissance: {
-          status: "warning",
-          findings: ["Server: Apache/2.4.41", "Technology: PHP 7.4", "Framework: WordPress 5.8"],
-          details:
-            "Information gathering revealed server details and technology stack. Some version information is exposed.",
-          duration: 3200,
+          status: reconnaissance?.status === "completed" ? "success" : "warning",
+          findings: [
+            `Subdomains found: ${reconnaissance?.results?.subdomains_found || 0}`,
+            `DNS records analyzed`,
+            `WHOIS information gathered`,
+          ],
+          details: reconnaissance?.results?.message || "Information gathering completed",
+          duration: reconnaissance?.executionTime || 0,
         },
         enumeration: {
-          status: "warning",
-          findings: ["Open ports: 80, 443, 22", "Directory listing enabled", "Admin panel accessible"],
-          details:
-            "Service enumeration found several open ports and accessible endpoints that may pose security risks.",
-          duration: 4500,
+          status: scanning?.status === "completed" ? "success" : "warning",
+          findings: [
+            `Open ports: ${scanning?.results?.ports_found?.length || 0}`,
+            `Services detected: ${scanning?.results?.ports_found?.map((p: any) => p.service).join(", ") || "None"}`,
+          ],
+          details: scanning?.results?.message || "Service enumeration completed",
+          duration: scanning?.executionTime || 0,
         },
         scan: {
           status: criticalIssues > 0 ? "error" : "warning",
           findings: [
-            "SQL injection vulnerability detected",
-            "Cross-site scripting (XSS) possible",
-            "Outdated software components",
-            "Missing security headers",
+            `Vulnerabilities detected: ${vulnerabilities}`,
+            `Critical issues: ${criticalIssues}`,
+            `Medium-risk issues: ${warnings}`,
           ],
-          details: "Vulnerability scanning identified multiple security issues requiring immediate attention.",
-          duration: 8900,
+          details: vulnerability?.results?.message || "Vulnerability scanning completed",
+          duration: vulnerability?.executionTime || 0,
         },
         vulnerability: {
           status: criticalIssues > 0 ? "error" : "warning",
           findings: [
             `${criticalIssues} critical vulnerabilities`,
             `${warnings} medium-risk issues`,
-            "OWASP Top 10 violations detected",
+            "Risk assessment completed",
           ],
-          details:
-            "Comprehensive vulnerability assessment completed. Risk levels have been categorized and prioritized.",
-          duration: 5600,
+          details: vulnerability?.results?.message || "Vulnerability assessment completed",
+          duration: vulnerability?.executionTime || 0,
         },
         exploitation: {
-          status: criticalIssues > 0 ? "error" : "success",
-          findings:
-            criticalIssues > 0
-              ? [
-                  "SQL injection exploit successful",
-                  "Privilege escalation possible",
-                  "Data exfiltration risk confirmed",
-                ]
-              : ["No critical exploits successful", "Security controls are effective", "Attack surface is limited"],
-          details:
-            criticalIssues > 0
-              ? "Exploitation testing confirmed the presence of exploitable vulnerabilities that could lead to system compromise."
-              : "Exploitation testing did not reveal any immediately exploitable vulnerabilities.",
-          duration: 6800,
+          status: exploitation?.status === "completed" ? "success" : "error",
+          findings: exploitation?.results?.exploits_simulated
+            ? [
+                `Exploits simulated: ${exploitation.results.exploits_simulated}`,
+                `Successful: ${exploitation.results.successful_simulations || 0}`,
+              ]
+            : ["No exploitation attempted"],
+          details: exploitation?.results?.message || "Exploitation testing completed",
+          duration: exploitation?.executionTime || 0,
         },
       },
     }
   }
 
-  const simulateScan = async () => {
+  const runRealScan = async () => {
     if (!url.trim()) return
 
     setIsScanning(true)
@@ -202,25 +270,79 @@ export function UrlScanner({ language }: UrlScannerProps) {
     }))
     setScanProgress(initialProgress)
 
-    for (let i = 0; i < scanSteps.length; i++) {
+    // Run each phase sequentially
+    for (let i = 0; i < scanSteps.length - 1; i++) {
+      // -1 because last step is report generation
+      const phase = scanSteps[i]
       setCurrentStep(i)
 
-      const duration = Math.random() * 2000 + 2000
-      await new Promise((resolve) => setTimeout(resolve, duration))
+      try {
+        console.log(`[v0] Starting phase: ${phase}`)
 
-      const shouldFail = Math.random() < 0.1 && i > 0
-      const status: StepStatus = shouldFail ? "failed" : "completed"
+        // Call the backend API for this phase
+        const phaseResult = await callPhaseAPI(phase, url)
+
+        // Update progress with completed status
+        setScanProgress((prev) =>
+          prev.map((item, index) => {
+            if (index === i) {
+              return {
+                ...item,
+                status: phaseResult.status === "completed" ? "completed" : "failed",
+                timestamp: new Date().toLocaleTimeString(),
+                results: phaseResult.results,
+                executionTime: phaseResult.execution_time_seconds * 1000, // Convert to ms
+                phaseId: phaseResult.phase_id,
+                message: phaseResult.status === "failed" ? phaseResult.results?.message : undefined,
+              }
+            } else if (index === i + 1) {
+              return {
+                ...item,
+                status: "running",
+                timestamp: new Date().toLocaleTimeString(),
+              }
+            }
+            return item
+          }),
+        )
+
+        // If phase failed, stop the scan
+        if (phaseResult.status === "failed" || phaseResult.status === "error") {
+          console.error(`[v0] Phase ${phase} failed:`, phaseResult.results?.message)
+          setIsScanning(false)
+          return
+        }
+      } catch (error) {
+        console.error(`[v0] Error in phase ${phase}:`, error)
+
+        // Update progress with failed status
+        setScanProgress((prev) =>
+          prev.map((item, index) => {
+            if (index === i) {
+              return {
+                ...item,
+                status: "failed",
+                timestamp: new Date().toLocaleTimeString(),
+                message: error instanceof Error ? error.message : "Unknown error occurred",
+              }
+            }
+            return item
+          }),
+        )
+
+        setIsScanning(false)
+        return
+      }
+    }
+
+    // Generate final report
+    try {
+      console.log(`[v0] Generating final report`)
+      setCurrentStep(scanSteps.length - 1)
 
       setScanProgress((prev) =>
         prev.map((item, index) => {
-          if (index === i) {
-            return {
-              ...item,
-              status,
-              timestamp: new Date().toLocaleTimeString(),
-              message: shouldFail ? getRandomErrorMessage() : undefined,
-            }
-          } else if (index === i + 1 && !shouldFail) {
+          if (index === scanSteps.length - 1) {
             return {
               ...item,
               status: "running",
@@ -231,15 +353,43 @@ export function UrlScanner({ language }: UrlScannerProps) {
         }),
       )
 
-      if (shouldFail) {
-        setIsScanning(false)
-        return
-      }
-    }
+      const reportResult = await generateReport(url)
 
-    const report = generateMockReport(url)
-    setSecurityReport(report)
-    setShowReport(true)
+      setScanProgress((prev) =>
+        prev.map((item, index) => {
+          if (index === scanSteps.length - 1) {
+            return {
+              ...item,
+              status: "completed",
+              timestamp: new Date().toLocaleTimeString(),
+              results: reportResult,
+            }
+          }
+          return item
+        }),
+      )
+
+      // Convert backend results to security report format
+      const report = convertToSecurityReport(url, scanProgress)
+      setSecurityReport(report)
+      setShowReport(true)
+    } catch (error) {
+      console.error(`[v0] Report generation error:`, error)
+
+      setScanProgress((prev) =>
+        prev.map((item, index) => {
+          if (index === scanSteps.length - 1) {
+            return {
+              ...item,
+              status: "failed",
+              timestamp: new Date().toLocaleTimeString(),
+              message: error instanceof Error ? error.message : "Report generation failed",
+            }
+          }
+          return item
+        }),
+      )
+    }
 
     setIsScanning(false)
     setCurrentStep(-1)
@@ -282,7 +432,7 @@ export function UrlScanner({ language }: UrlScannerProps) {
                 className="font-mono bg-input border-border focus:border-cyber-neon focus:ring-cyber-neon/20"
               />
               <Button
-                onClick={isScanning ? resetScan : simulateScan}
+                onClick={isScanning ? resetScan : runRealScan}
                 disabled={!url.trim() && !isScanning}
                 className="bg-primary hover:bg-primary/80 text-primary-foreground neon-glow"
               >
@@ -344,6 +494,11 @@ export function UrlScanner({ language }: UrlScannerProps) {
                           </Tooltip>
                         </div>
                         {progress.message && <div className="text-sm text-cyber-danger">{progress.message}</div>}
+                        {progress.executionTime && progress.status === "completed" && (
+                          <div className="text-xs text-muted-foreground font-mono">
+                            Completed in {(progress.executionTime / 1000).toFixed(2)}s
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -360,8 +515,26 @@ export function UrlScanner({ language }: UrlScannerProps) {
           </Card>
         )}
 
+        {/* Phase Result Cards */}
+        {scanProgress.length > 0 && !showReport && (
+          <div className="space-y-4">
+            {scanProgress
+              .filter((progress) => progress.status === "completed" && progress.results && progress.step !== "report")
+              .map((progress) => (
+                <PhaseResultCard
+                  key={progress.step}
+                  phase={progress.step}
+                  results={progress.results}
+                  executionTime={progress.executionTime}
+                  timestamp={progress.timestamp}
+                  language={language}
+                />
+              ))}
+          </div>
+        )}
+
         {/* Security Report Section */}
-        {showReport && <SecurityReport report={securityReport} onDownload={handleReportDownload} />}
+        {showReport && securityReport && <SecurityReport report={securityReport} onDownload={handleReportDownload} />}
       </div>
     </TooltipProvider>
   )

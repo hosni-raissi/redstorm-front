@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { ThemeProvider } from "next-themes"
 import "./globals.css"
-
+import "../styles/globals.css"
 export const metadata: Metadata = {
   title: "CyberSec Dashboard - Penetration Testing Suite",
   description: "Advanced cybersecurity dashboard for vulnerability assessment and penetration testing",
